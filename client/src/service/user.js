@@ -45,17 +45,17 @@ export const activateAccount = async (email, otp, setIsOtpEnter, setVerifyEmail,
 export const loginAccount = async (loginDetails, setIsAuth) => {
     console.log(loginDetails);
     try {
-        const response =await axios.post(`${userUrl}/login`,loginDetails);
-        // toast.promise(response, {
-        //     pending: "Logging in...",
-        //     success: "Logged in successfully!",
-        //     error: "Error logging in"
-        // })
+        const response = axios.post(`${userUrl}/login`,loginDetails);
+        toast.promise(response, {
+            pending: "Logging in...",
+            success: "Logged in successfully!",
+            error: "Error logging in"
+        })
         console.log((await response));
         // const data = (await response).data;
         // setIsAuth(data.success)
         // console.log(data);
-        getAccountDetails()
+        // getAccountDetails()
 
     } catch (error) {
         console.error(error);
