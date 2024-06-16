@@ -1,0 +1,335 @@
+.display-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* =============================== FILTER CONTAINER STYLE================================================== */
+.filter-btn-container {
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: .5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid gray;
+    width: 90%;
+}
+
+.filter-btn-container .applied-filter-btn {
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 3px;
+    padding: 0 16px;
+    border-radius: 4px;
+    color: #fff;
+    background: #6200ee;
+    line-height: 1.15;
+    font-size: 14px;
+    height: 36px;
+    word-spacing: 0px;
+    letter-spacing: .0892857143em;
+    text-decoration: none;
+    text-transform: uppercase;
+    min-width: 64px;
+    border: none;
+    text-align: center;
+    box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-btn {
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 3px;
+    padding: 0 15px;
+    border-radius: 4px;
+    color: #6200ee;
+    background: transparent;
+    line-height: 1.15;
+    font-size: 14px;
+    height: 36px;
+    word-spacing: 0px;
+    letter-spacing: .0892857143em;
+    text-decoration: none;
+    text-transform: uppercase;
+    min-width: 64px;
+    border: 1px solid #6200ee;
+    text-align: center;
+}
+
+.filter-btn-container label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-btn-container .sorted-criteria-select {
+    border-color: #00baee;
+    color: #00abee;
+    background: transparent;
+    padding: 2px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+}
+
+.filter-btn-container label span {
+    color: #00abee;
+}
+
+
+/* ============================ SEARCH CONTAINER STYLE======================= */
+
+.search-bar {
+    display: flex;
+    width: 6rem;
+}
+
+.search-bar input,
+.search-btn,
+.search-btn:before,
+.search-btn:after {
+
+    transition: all 0.25s ease-out;
+}
+
+.search-bar input,
+.search-btn {
+    width: 3em;
+    height: 3em;
+}
+
+.search-bar input:invalid:not(:focus),
+.search-btn {
+    cursor: pointer;
+}
+
+.search-bar,
+.search-bar input:focus,
+.search-bar input:valid {
+    width: 100%;
+}
+
+.search-bar input:focus,
+.search-bar input:not(:focus)+.search-btn:focus {
+    outline: transparent;
+}
+
+.search-bar {
+    max-width: 15rem;
+}
+
+.search-bar input {
+    background: transparent;
+    border-radius: 1.5em;
+    box-shadow: 0 0 0 0.4em #171717 inset;
+    padding: 0.75em;
+    transform: translate(0.5em, 0.5em) scale(0.5);
+    transform-origin: 100% 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.search-bar input::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+.search-bar input:focus,
+.search-bar input:valid {
+    background: #fff;
+    border-radius: 0.375em 0 0 0.375em;
+    box-shadow: 0 0 0 0.1em #d9d9d9 inset;
+    transform: scale(1);
+}
+
+.search-btn {
+    background: #171717;
+    border-radius: 0 0.75em 0.75em 0 / 0 1.5em 1.5em 0;
+    padding: 0.75em;
+    position: relative;
+    transform: translate(0.25em, 0.25em) rotate(45deg) scale(0.25, 0.125);
+    transform-origin: 0 50%;
+}
+
+.search-btn:before,
+.search-btn:after {
+    content: "";
+    display: block;
+    opacity: 0;
+    position: absolute;
+}
+
+.search-btn:before {
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.2em #f1f1f1 inset;
+    top: 0.75em;
+    left: 0.75em;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.search-btn:after {
+    background: #f1f1f1;
+    border-radius: 0 0.25em 0.25em 0;
+    top: 51%;
+    left: 51%;
+    width: 0.75em;
+    height: 0.25em;
+    transform: translate(0.2em, 0) rotate(45deg);
+    transform-origin: 0 50%;
+}
+
+.search-btn span {
+    display: inline-block;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+}
+
+/* Active state */
+.search-bar input:focus+.search-btn,
+.search-bar input:valid+.search-btn {
+    background: #2762f3;
+    border-radius: 0 0.375em 0.375em 0;
+    transform: scale(1);
+}
+
+.search-bar input:focus+.search-btn:before,
+.search-bar input:focus+.search-btn:after,
+.search-bar input:valid+.search-btn:before,
+.search-bar input:valid+.search-btn:after {
+    opacity: 1;
+}
+
+.search-bar input:focus+.search-btn:hover,
+.search-bar input:valid+.search-btn:hover,
+.search-bar input:valid:not(:focus)+.search-btn:focus {
+    background: #0c48db;
+}
+
+.search-bar input:focus+.search-btn:active,
+.search-bar input:valid+.search-btn:active {
+    transform: translateY(1px);
+}
+
+@media screen and (prefers-color-scheme: dark) {
+    .search-bar input {
+        color: #f1f1f1;
+    }
+
+    .search-bar input {
+        box-shadow: 0 0 0 0.4em #f1f1f1 inset;
+    }
+
+    .search-bar input:focus,
+    .search-bar input:valid {
+        background: #3d3d3d;
+        box-shadow: 0 0 0 0.1em #3d3d3d inset;
+    }
+
+    .search-btn {
+        background: #abaaaa;
+    }
+}
+/* ==============================TASK CONTAINER STYLE============================================= */
+.task-container {
+    position: relative;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    background: white;
+    border-radius: 8px;
+    margin-top: 1rem;
+    padding: 1rem;
+    align-self: center;
+    transition: ease-in-out .4s;
+}
+
+.task-container:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.task-container p {
+    font-size: 1.5rem;
+    margin: 5px;
+}
+
+.task-container .task-index {
+    width: 1rem;
+    color: dodgerblue;
+}
+
+.task-container .task-name {
+    width: 20rem;
+
+    height: fit-content;
+    word-wrap: break-word;
+    color: #6200ee;
+}
+
+.task-container .due-date {
+    width: 8rem;
+    color: #0c5c6e;
+}
+
+.task-container .due-time {
+    width: 5rem;
+    color: #0c5c6e;
+}
+
+.task-container .is-done-icon-para {
+    width: 2rem;
+}
+
+.task-container .pending-icon {
+    color: orange;
+}
+
+.task-container .completed-icon {
+    color: green;
+}
+
+.task-container .mark-complete-btn {
+
+    width: 8rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #341f97;
+}
+
+.mark-complete-btn:disabled {
+    color: #9c88f8;
+}
+
+.task-container .delete-btn {
+    font-size: 1.5rem;
+    color: rgb(180, 3, 3);
+    cursor: pointer;
+}
+
+.task-container .time-over-cut {
+    position: absolute;
+    top: 43%;
+    width: 100%;
+    height: 2px;
+    background-color: red;
+}
+
+/* ============================ Empty Task style ==================================== */
+.empty-heading{
+    font-size: 3rem;
+    letter-spacing: 3px;
+    color: rgb(6, 48, 126);
+}

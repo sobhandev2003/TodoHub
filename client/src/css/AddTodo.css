@@ -1,0 +1,45 @@
+.add-todo-container {
+    margin-left: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 2.5rem;
+    column-gap: 2.5rem;
+}
+
+.add-todo-container .input-container {
+    position: relative;
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-todo-container .add-btn {
+    cursor: pointer;
+    outline: 0;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    color: #0d6efd;
+    background-color: transparent;
+    border: 1px solid #0d6efd;
+    padding: 6px 12px;
+    font-size: 1rem;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out;
+
+}
+
+.add-btn:hover {
+    color: #fff;
+    background-color: #0d6efd;
+
+}
+
+.add-todo-container .error {
+    color: red;
+    position: absolute;
+    top: 100%;
+    left: 0;
+}
