@@ -44,7 +44,7 @@ function Nav() {
                             textDecoration: 'none',
                         }}
                     >
-                        <LuListTodo />
+                        <LuListTodo  fontSize={"2.5rem"}/>
                     </Box>
 
 
@@ -61,7 +61,7 @@ function Nav() {
                             textDecoration: 'none',
                         }}
                     >
-                        <LuListTodo />
+                        <LuListTodo fontSize={"2.5rem"}/>
                     </Box>
 
                     <Box sx={{ flexGrow: 0, justifySelf: "flex-end" }}>

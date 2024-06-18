@@ -1,7 +1,7 @@
 
 import { useStateContext } from './contexts/ContextProvider';
 import './css/App.css'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { getAccountDetails } from './service/user';
 import Home from './pages/Home';
 import {
@@ -14,16 +14,10 @@ import { ResetPassword } from './components/ResetPasword';
 
 function App() {
   const { 
-    userDetails,
     setUserDetails,
-    storedTask,
     setStoredTask,
     setFilterState
   } = useStateContext()
-  const [tasks, setTasks] = useState(() => {
-    const storedTasks = localStorage.getItem('tasks')
-    return storedTasks ? JSON.parse(storedTasks) : []
-  });
 
  
 
@@ -36,9 +30,7 @@ function App() {
 
     // eslint-disable-next-line
   }, [])
-  useEffect(() => {
-    setTasks(storedTask)
-  }, [storedTask])
+
   return (
     <div className='App'>
       <Routes>
