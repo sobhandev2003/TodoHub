@@ -5,10 +5,11 @@ import App from './App';
 import { ContextProvider } from './contexts/ContextProvider';
 import { Flip, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {BrowserRouter} from 'react-router-dom'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-
+<BrowserRouter>
     <ContextProvider>
       <ToastContainer
         position="top-right"
@@ -25,6 +26,7 @@ root.render(
       />
       <App />
     </ContextProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

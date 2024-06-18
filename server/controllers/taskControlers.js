@@ -1,6 +1,6 @@
 
 const asyncHandler = require("express-async-handler");
-const { Task, TaskList } = require("../models/taskModel");
+const { Task, TaskList, parseDate } = require("../models/taskModel");
 const { User } = require("../models/userModel");
 const { customDateValidator } = require("../utils/validator");
 //NOTE - Create new task
@@ -15,7 +15,6 @@ const createTask = asyncHandler(async (req, res) => {
         throw new Error("Invalid due date");
     }
     dueDate = new Date(dueDate).toLocaleDateString();
-    console.log(dueDate);
 
     const user = await User.findById(req.user.id);
     if (!user || !user.isVerified) {
@@ -48,13 +47,11 @@ const markAsCompleted = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error("Invalid request");
     }
-    // console.log(req.user.id);
     const taskList = await TaskList.findOne({ userId: req.user.id });
     if (!taskList) {
         res.status(404)
         throw new Error("Task not found");
     }
-    // console.log(taskList);
     const task = taskList.task.id(taskId)
     if (!task) {
         res.status(404)
@@ -70,12 +67,13 @@ const markAsCompleted = asyncHandler(async (req, res) => {
     }
     task.isDone = true;
     await taskList.save();
-    res.status(200).json({ success: true, message: "Task marked as completed." })
+    res.status(200).json({ success: true, message: "Task marked as completed.", task })
 })
 
 //NOTE - Delete a task
 const deleteTask = asyncHandler(async (req, res) => {
     const { taskId } = req.params;
+
     if (!taskId) {
         res.status(400)
         throw new Error("Invalid request")
@@ -95,8 +93,82 @@ const deleteTask = asyncHandler(async (req, res) => {
     res.status(200).json({ success: true, message: "Successfully removed" })
 
 })
+//NOTE - Gate all task login user
+const getAllTask = asyncHandler(async (req, res) => {
+
+    const taskList = await TaskList.findOne({ userId: req.user.id });
+    if (!taskList) {
+        res.status(404)
+        throw new Error("No task found");
+    }
+    res.status(200)
+        .json({
+            success: true,
+            task: taskList.task
+        })
+})
+//NOTE -  Gate today task
+const getTodayTask = asyncHandler(async (req, res) => {
+    const taskList = await TaskList.findOne({ userId: req.user.id });
+    if (!taskList) {
+        res.status(404)
+        throw new Error("No task found");
+    }
+    const now = parseDate(new Date().toLocaleDateString());
+    //STUB -  Function to check if two dates are the same (year, month, day)
+    const areDatesSame = (date1, date2) => {
+        return date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate();
+    };
+
+    const todayTask = taskList.task.filter((t) => {
+        const dueDate = parseDate(t.dueDate);
+        return areDatesSame(dueDate, now);
+    })
+    res.status(200)
+        .json({
+            success: true,
+            task: todayTask
+        })
+})
+//NOTE - Gate pending task
+const getPendingTask = asyncHandler(async (req, res) => {
+    const taskList = await TaskList.findOne({ userId: req.user.id });
+    if (!taskList) {
+        res.status(404)
+        throw new Error("No task found");
+    }
+    const pendingTask = taskList.task.filter((t) => !t.isDone);
+   
+    res.status(200)
+        .json({
+            success: true,
+            task: pendingTask
+        })
+})
+//NOTE - Gate completed task
+const getCompletedTask = asyncHandler(async (req, res) => {
+    const taskList = await TaskList.findOne({ userId: req.user.id });
+    if (!taskList) {
+        res.status(404)
+        throw new Error("No task found");
+    }
+    const completedTask = taskList.task.filter((t) => t.isDone);
+    res.status(200)
+        .json({
+            success: true,
+            task: completedTask
+        })
+
+})
+
 module.exports = {
     createTask,
     markAsCompleted,
-    deleteTask
+    deleteTask,
+    getAllTask,
+    getTodayTask,
+    getPendingTask,
+    getCompletedTask
 }

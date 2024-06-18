@@ -9,5 +9,9 @@ const customDateValidator = (value) => {
 
   return regex.test(value);
 };
+//NOTE - 
+function containsSpace(str) {
+  return /\s/.test(str);
+}
 
-module.exports={validateEmail,customDateValidator}
+module.exports={validateEmail,customDateValidator,containsSpace}

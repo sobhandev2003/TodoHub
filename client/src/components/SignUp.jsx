@@ -4,8 +4,9 @@ import * as yup from 'yup';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { registerAccount } from '../service/user';
-import { useStateContext } from '../contexts/ContextProvider';
-
+import { useNavigate } from 'react-router-dom';
+import {Link} from 'react-router-dom'
+import { Link as MuiLink} from '@mui/material';
 const validationSchema = yup.object({
     userName: yup
         .string("Enter your name")
@@ -22,11 +23,10 @@ const validationSchema = yup.object({
 });
 
 const SignUp = () => {
-    const {setIsOtpEnter,setISAccountVerify,setVerifyEmail}=useStateContext()
+    const navigate=useNavigate()
     //NOTE - Handel account creation
     const handelAccountRegister=(userDetails)=>{
-        registerAccount(userDetails,setIsOtpEnter,setISAccountVerify,setVerifyEmail)
-        // console.log(userDetails);
+        registerAccount(userDetails,navigate)
     }
 
     const formik = useFormik({
@@ -37,13 +37,12 @@ const SignUp = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            // alert(JSON.stringify(values, null, 2));
             handelAccountRegister(values)
         },
     });
 
     return (
-        <div >
+        <div className=' flex flex-col'>
             <form onSubmit={formik.handleSubmit} >
             <TextField
                     variant="standard"
@@ -90,6 +89,11 @@ const SignUp = () => {
                     Sign up
                 </Button>
             </form>
+            <div className='w-full flex justify-end mt-2'>
+        <Link to="/request/active-account">
+        <MuiLink>Active account</MuiLink>
+        </Link>
+      </div>
         </div>
     );
 };

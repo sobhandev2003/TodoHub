@@ -13,7 +13,7 @@ function ResponsiveDatePickers({ label, todayDate, setDate }) {
       <DatePicker
         label={label}
         defaultValue={dayjs(todayDate)}
-        minDate={dayjs(todayDate)}
+        minDate={dayjs(new Date().toLocaleDateString())}
         onChange={handelChange}
         
       />

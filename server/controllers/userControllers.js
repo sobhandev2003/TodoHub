@@ -3,8 +3,9 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const otpGenerator = require('otp-generator')
 const { TaskList } = require('../models/taskModel');
-const { validateEmail } = require('../utils/validator');
+const { validateEmail, containsSpace } = require('../utils/validator');
 const { User, OTP } = require('../models/userModel');
+const { sendEmail } = require('../utils/senEmail');
 //NOTE - Register new user account
 const registerNewUser = asyncHandler(async (req, res) => {
     const { userName, email, password } = req.body;
@@ -13,6 +14,7 @@ const registerNewUser = asyncHandler(async (req, res) => {
         !email ||
         !password ||
         password.length < 4 ||
+        containsSpace(password) ||
         !validateEmail(email)
     ) {
         res.status(400)
@@ -51,7 +53,11 @@ const verifyEmail = asyncHandler(async (req, res) => {
         res.status(404)
         throw new Error('User not found')
     }
-    await verifyOTP(email, user.otpId, otp)
+    if (user.isVerified) {
+        res.status(400)
+        throw new Error('Email already verified')
+    }
+    await handelVerifyOTP(email, user.otpId, otp)
     const exitOTP = await OTP.findById(user.otpId);
     if (!exitOTP || !exitOTP.isVerified) {
         res.status(400)
@@ -73,8 +79,6 @@ const verifyEmail = asyncHandler(async (req, res) => {
 //NOTE - Login user account
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    // FIXME - 
-    // res.status(200).json("Done.....")
     if (!email || !password) {
         res.status(400)
         throw new Error('Invalid input')
@@ -84,8 +88,6 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(404)
         throw new Error('User not found')
     }
-    //FIXME - to
-
     if (!user.isVerified) {
         res.status(401)
         throw new Error('Email not verified')
@@ -103,16 +105,25 @@ const loginUser = asyncHandler(async (req, res) => {
         process.env.JWT_SECRET_KEY,
         { expiresIn: '30d' }
     )
-    // console.log(authToken);
 
-    // res
-
-    res.status(200).cookie("jwtToken", jwtToken, {
+    const cookieOption = {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        httpOnly: true,
         sameSite: "none",
-        secure:true
-    }).json({ success: true, jwtToken })
+        secure: true
+    }
+    res
+        .status(200)
+        .cookie("jwtToken", jwtToken, cookieOption)
+        .json({ success: true, jwtToken })
+})
+//NOTE - Log out login user
+const logoutUser = asyncHandler(async (req, res) => {
+    const cookieOption = {
+        path: "/",
+        sameSite: "none",
+        secure: true
+    }
+    res.status(200).clearCookie("jwtToken", cookieOption).json({ success: true, message: "User log out." })
 
 })
 //NOTE - Gate login user details
@@ -132,18 +143,35 @@ const loginUserDetails = asyncHandler(async (req, res) => {
         userName: user.userName,
         email: user.email,
         taskListId: taskList._id,
-        task: taskList.task
     })
 })
-//NOTE - Request for reset password
 
 
-//NOTE - 
+
+//NOTE - Verify OTP
+const verifyOtp = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body
+    const user = await User.findOne({ email })
+    if (!user) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+    await handelVerifyOTP(email, user.otpId, otp)
+    const exitOTP = await OTP.findById(user.otpId);
+    if (!exitOTP || !exitOTP.isVerified) {
+        res.status(400)
+        throw new Error("Invalid OTP")
+    }
+    res.status(200).json({ success: true, message: "OTP successfully verified" })
+
+
+})
+
 
 //NOTE - Reset password
-const resetPassword = asyncHandler(async () => {
+const resetPassword = asyncHandler(async (req, res) => {
     const { email, password } = req.body
-    if (!email) {
+    if (!email || !password || password.length < 4 || containsSpace(password)) {
         res.status(400)
         throw new Error('Invalid input')
     }
@@ -152,11 +180,19 @@ const resetPassword = asyncHandler(async () => {
         res.status(404)
         throw new Error('User not found')
     }
+    if (!user.isVerified) {
+        res.status(400)
+        throw new Error('Account not verified')
+    }
 
     const exitOTP = await OTP.findById(user.otpId);
-    if (!exitOTP || !exitOTP.isVerified) {
+    if (!exitOTP) {
         res.status(400);
         throw new Error('Request time out.');
+    }
+    if (!exitOTP.isVerified) {
+        res.status(400);
+        throw new Error('Not verified');
     }
     const hashPassword = bcrypt.hashSync(password, Number(process.env.SALT_ROUNDS))
     user.password = hashPassword
@@ -191,7 +227,7 @@ const handelOTPSend = asyncHandler(async (user, email) => {
         email,
         otp
     })
-
+    await sendEmail(email, otp)
     user.otpId = dbOtp._id;
     return {
         success: true,
@@ -199,7 +235,7 @@ const handelOTPSend = asyncHandler(async (user, email) => {
     }
 })
 //NOTE - VEry OTP
-const verifyOTP = asyncHandler(async (email, otpId, otp) => {
+const handelVerifyOTP = asyncHandler(async (email, otpId, otp) => {
     const exitOTP = await OTP.findById(otpId);
     if (!exitOTP) {
         return;
@@ -214,8 +250,10 @@ const verifyOTP = asyncHandler(async (email, otpId, otp) => {
 module.exports = {
     registerNewUser,
     loginUser,
+    logoutUser,
     loginUserDetails,
     verifyEmail,
     resetPassword,
-    resendOtp
+    resendOtp,
+    verifyOtp
 }

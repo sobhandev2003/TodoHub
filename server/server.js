@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser')
 configDotenv()
 const app = express()
 const corsOptions = {
-    origin: /^http:\/\/localhost:\d+$/,
+    origin:true,
     credentials: true // Allow cookies with CORS
 };
 app.use(cors(corsOptions))
@@ -19,5 +19,5 @@ app.use(require("./middilware/errorHendeler"))
 
 const port=process.env.PORT||5000
 app.listen(port,()=>{
-    console.log(`Server is running on http://127.0.0.1:${port}`)
+    console.log(`Server is running on ${port}`)
 })

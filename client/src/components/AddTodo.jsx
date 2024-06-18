@@ -1,12 +1,14 @@
 import '../css/AddTodo.css'
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify';
-import { v4 as uuidv4 } from 'uuid';
 import ResponsiveDatePickers from './ResponsiveDatePickers';
 import TextFields from './TextFields';
-function AddTodo({ tasks, setTasks }) {
+import { addNewTask } from '../service/task';
+import { useStateContext } from '../contexts/ContextProvider';
+function AddTodo() {
+
     const [newTaskName, setNewTaskName] = useState("");
-    const [newDueDate, setNewDueDate] = useState(new Date().toLocaleString().split(",")[0]);
+    const [newDueDate, setNewDueDate] = useState(new Date().toLocaleDateString());
+    const { setStoredTask, setFilterState } = useStateContext()
 
     const [errorMsg, setErrorMsg] = useState({
         taskNameError: "",
@@ -23,7 +25,7 @@ function AddTodo({ tasks, setTasks }) {
         })
 
     }
-    const addNewTask = () => {
+    const handelAddNewTask = () => {
         if (newTaskName.trim() === "" || newDueDate.trim() === "") {
             setIsTouched({
                 taskName: true,
@@ -32,16 +34,12 @@ function AddTodo({ tasks, setTasks }) {
             produceError()
         }
         else {
-            const currentTime = new Date();
-            setTasks((prevTasks) => [...prevTasks, {
-                id: uuidv4() + currentTime,
+            const taskData = {
                 taskName: newTaskName,
-                dueDate: newDueDate,
-                isDone: false,
-                isTimeOver: false,
-                createdAt: new Date()
-            }]);
-            toast.success("🚀 Task successfully added")
+                dueDate: newDueDate
+            }
+            addNewTask(taskData, setStoredTask, setFilterState)
+            setNewTaskName("");
 
         }
     }
@@ -64,7 +62,7 @@ function AddTodo({ tasks, setTasks }) {
                 {errorMsg.dueDateError && isTouched.dueDate && <span className='error'>{errorMsg.dueDateError}</span>}
             </div>
 
-            <button type='button' className='add-btn' onClick={addNewTask}>ADD  &#x2b;</button>
+            <button type='button' className='add-btn' onClick={handelAddNewTask}>ADD  &#x2b;</button>
         </div>
     )
 }
