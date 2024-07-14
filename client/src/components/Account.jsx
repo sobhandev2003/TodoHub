@@ -8,7 +8,7 @@ const Account = () => {
     const { isLogin, setIsLogin} = useStateContext()
     return (
         <div className=' px-4 flex w-screen h-screen items-center'>
-            <div className='flex w-2/4 h-full items-center'>
+            <div className='flex w-2/4 h-full items-center lg:w-3/4 md:hidden'>
                 <img src={photo} className=' w-10/12' alt='' />
             </div>
             <div className=' m-4'>

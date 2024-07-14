@@ -64,6 +64,6 @@ async function updateIsTimeOver() {
 }
 
 //Run the scheduled task at 12:00 AM, 12:10 AM, and 12:20 AM every day.
-cron.schedule('0,10,20 0 * * *', updateIsTimeOver);
+cron.schedule('0 0 * * *', updateIsTimeOver);
 
 module.exports = { parseDate, Task, TaskList }
